@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.iiexercise.dao.BookRepository;
 import com.example.iiexercise.entities.Book;
+import com.example.iiexercise.entities.BookCategory;
 import com.example.iiexercise.exceptions.DataAlreadyExistException;
 import com.example.iiexercise.exceptions.DataNotExistException;
 import com.example.iiexercise.exceptions.MissingDataException;
@@ -24,6 +25,21 @@ public class BookVerificators {
 	public void verifyBookIdExist(Long bookId) {
 		if (bookId == null || !bookRepository.existsById(bookId))
 			throw new DataNotExistException(" there is no book has id =" + bookId);
+	}
+
+	public void verifyNextReleaseDate(Date nextReleaseDate) {
+		if (nextReleaseDate.before(new Date())) {
+			throw new WrongValueException("NextReleaseDate must be in the future");
+		}
+	}
+
+	public void verifyBookCategoryExist(String categoryName) {
+		for (BookCategory category : BookCategory.values()) {
+			if (category.name().equalsIgnoreCase(categoryName)) {
+				return;
+			}
+		}
+		throw new MissingDataException("there is no category named " + categoryName);
 	}
 
 	public void verifyBookForInsertion(Book book) {

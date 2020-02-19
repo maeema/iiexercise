@@ -1,7 +1,6 @@
 package com.example.iiexercise.services.Implementation;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,8 +16,6 @@ import com.example.iiexercise.entities.BookCategory;
 import com.example.iiexercise.entities.Magazine;
 import com.example.iiexercise.entities.Novel;
 import com.example.iiexercise.entities.Stock;
-import com.example.iiexercise.exceptions.MissingDataException;
-import com.example.iiexercise.exceptions.WrongValueException;
 import com.example.iiexercise.services.IBookService;
 import com.example.iiexercise.services.verificators.AuthorVerificators;
 import com.example.iiexercise.services.verificators.BookVerificators;
@@ -49,11 +46,9 @@ public class BookService implements IBookService {
 	public List<Book> getByLibraryName(String libraryName) {
 		List<Book> books = new ArrayList<>();
 		List<Stock> stocks = stockRepository.findAllByLibraryName(libraryName);
-
 		for (Stock stock : stocks) {
 			books.add(stock.getBook());
 		}
-
 		return books;
 	}
 
@@ -64,13 +59,10 @@ public class BookService implements IBookService {
 	}
 
 	@Override
-	public Magazine getMagazineClosedRelease(String cathegorie) {
-		for (BookCategory category : BookCategory.values()) {
-			if (category.name().equalsIgnoreCase(cathegorie)) {
-				return magazineRepository.findTopByCategoryOrderByNextReleaseDateDesc(category);
-			}
-		}
-		throw new MissingDataException("there is no category named " + cathegorie);
+	public Magazine getMagazineClosedRelease(String category) {
+		bookVerificators.verifyBookCategoryExist(category);
+		return magazineRepository
+				.findTopByCategoryOrderByNextReleaseDateDesc(BookCategory.valueOf(category.toUpperCase()));
 	}
 
 	@Override
@@ -87,13 +79,10 @@ public class BookService implements IBookService {
 	@Override
 	public Magazine addMagazine(Magazine magazine) {
 		bookVerificators.verifyBookForInsertion(magazine);
+		bookVerificators.verifyNextReleaseDate(magazine.getNextReleaseDate());
 		if (magazine.getTotalUnitSold() == null) {
 			magazine.setTotalUnitSold(0L);
 		}
-		if (magazine.getNextReleaseDate().before(new Date())) {
-			throw new WrongValueException("NextReleaseDate must be in the future");
-		}
-
 		magazine.setId(null); // <^_^>
 		return magazineRepository.save(magazine);
 	}
@@ -106,9 +95,7 @@ public class BookService implements IBookService {
 			magazineRepository.saveAndFlush(bookIsMagazine.get().setByBook(book));
 		} else {
 			Optional<Novel> bookIsNovel = novelRepository.findById(book.getId());
-			if (bookIsNovel.isPresent()) {
-				novelRepository.saveAndFlush(bookIsNovel.get().setByBook(book));
-			}
+			novelRepository.saveAndFlush(bookIsNovel.get().setByBook(book));
 		}
 	}
 
