@@ -24,7 +24,7 @@ public class AuthorRestController {
 		try {
 			return ResponseEntity.ok(authorService.add(author));
 		} catch (RunTimeRestControllerException e) {
-			return ResponseEntity.status(e.errorCode).body(e.getMessage());
+			return ResponseEntity.status(e.getErrorCode()).body(e.getMessage());
 		} catch (RuntimeException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unexpected error found");
 		}
@@ -36,7 +36,7 @@ public class AuthorRestController {
 			authorService.update(author);
 			return ResponseEntity.ok(null);
 		} catch (RunTimeRestControllerException e) {
-			return ResponseEntity.status(e.errorCode).body(e.getMessage());
+			return ResponseEntity.status(e.getErrorCode()).body(e.getMessage());
 		} catch (RuntimeException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unexpected error found");
 		}
@@ -49,7 +49,7 @@ public class AuthorRestController {
 			authorService.delete(id);
 			return ResponseEntity.ok(null);
 		} catch (RunTimeRestControllerException e) {
-			return ResponseEntity.status(e.errorCode).body(e.getMessage());
+			return ResponseEntity.status(e.getErrorCode()).body(e.getMessage());
 		} catch (RuntimeException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unexpected error found");
 		}

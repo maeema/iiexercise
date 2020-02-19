@@ -9,7 +9,7 @@ public abstract class RunTimeRestControllerException extends RuntimeException {
 
 	private static final long serialVersionUID = 856750563167800651L;
 
-	public HttpStatus errorCode;
+	public  abstract HttpStatus getErrorCode();
 
 	public RunTimeRestControllerException() {
 		super();
