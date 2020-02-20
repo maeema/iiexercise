@@ -76,6 +76,8 @@ public class BookVerificators {
 		if (book.getTotalUnitSold() != null && book.getTotalUnitSold() < 0) {
 			throw new WrongValueException("totalUnitSold must be a positive value");
 		}
+		if (book.getName() != null && bookRepository.existsByName(book.getName()))
+			throw new DataAlreadyExistException("Book with name " + book.getName(), book.getClass().getSimpleName());
 		verifyBookIdExist(book.getId());
 	}
 }

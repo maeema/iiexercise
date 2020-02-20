@@ -8,11 +8,15 @@ import org.springframework.stereotype.Service;
 import com.example.iiexercise.dao.StockRepository;
 import com.example.iiexercise.entities.Stock;
 import com.example.iiexercise.services.IStockService;
+import com.example.iiexercise.services.verificators.StockVerificators;
 
 @Service
 public class StockService implements IStockService {
 	@Autowired
-	StockRepository stockRepository;
+	private StockRepository stockRepository;
+	
+	@Autowired
+	private StockVerificators stockVerificators;
 
 	@Override
 	public List<Stock> getStocksByLibraryName(String libraryName) {
@@ -21,15 +25,18 @@ public class StockService implements IStockService {
 
 	@Override
 	public Stock add(Stock stock) {
+		stockVerificators.verifyStockForInsertion(stock);
 		return stockRepository.save(stock);
 	}
 
 	public void update(Stock stock) {
+		stockVerificators.verifyStockForUpdate(stock);
 		stockRepository.saveAndFlush(stock);
 
 	}
 
 	public void delete(Long id) {
+		stockVerificators.verifyStockIdExist(id);
 		stockRepository.deleteById(id);
 
 	}

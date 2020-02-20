@@ -8,4 +8,6 @@ public interface LibraryRepository extends JpaRepository<Library, Long> {
 
 	Library findOneByName(String name);
 
+	boolean existsByName(String name);
+
 }

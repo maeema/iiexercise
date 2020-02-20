@@ -30,9 +30,12 @@ public class AuthorVerificators {
 	public void verifyAuthorForInsertion(Author author) {
 		if (author == null || author.getName() == null || author.getAge() <= 0) {
 			throw new MissingDataException("Author must have name and strictly positive age");
-		} else if (authorRepository.existsByNameAndAge(author.getName(), author.getAge()))
+		}
+		if (authorRepository.existsByNameAndAge(author.getName(), author.getAge())) {
 			throw new DataAlreadyExistException(
 					" The Author " + author.getName() + " with age = " + author.getAge() + " years", "Authors");
+		}
+
 	}
 
 	public void verifyAuthorForUpdate(Author author) {
@@ -44,5 +47,10 @@ public class AuthorVerificators {
 		else if (author.getAge() < 0)
 			throw new WrongValueException("Age can't be negative value [age = " + author.getAge() + "]");
 		verifyAuthorIdExist(author.getId());
+		if (author.getName() != null && author.getAge() > 0
+				&& authorRepository.existsByNameAndAge(author.getName(), author.getAge())) {
+			throw new DataAlreadyExistException(
+					" The Author " + author.getName() + " with age = " + author.getAge() + " years", "Authors");
+		}
 	}
 }
