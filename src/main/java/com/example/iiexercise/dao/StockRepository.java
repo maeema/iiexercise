@@ -6,8 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.iiexercise.entities.Stock;
 
-public interface StockRepository extends JpaRepository<Stock, Long>{
+public interface StockRepository extends JpaRepository<Stock, Long> {
 
 	List<Stock> findAllByLibraryName(String libraryName);
+
+	boolean existsByLibraryIdAndBookId(Long libraryId, Long bookId);
 
 }
