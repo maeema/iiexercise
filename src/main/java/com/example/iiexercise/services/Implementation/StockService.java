@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.iiexercise.dao.StockRepository;
 import com.example.iiexercise.entities.Stock;
+import com.example.iiexercise.exceptions.RunTimeRestControllerException;
 import com.example.iiexercise.services.IStockService;
 import com.example.iiexercise.services.verificators.StockVerificators;
 
@@ -24,18 +25,18 @@ public class StockService implements IStockService {
 	}
 
 	@Override
-	public Stock add(Stock stock) {
+	public Stock add(Stock stock) throws RunTimeRestControllerException {
 		stockVerificators.verifyStockForInsertion(stock);
 		return stockRepository.save(stock);
 	}
 
-	public void update(Stock stock) {
+	public void update(Stock stock) throws RunTimeRestControllerException {
 		stockVerificators.verifyStockForUpdate(stock);
 		stockRepository.saveAndFlush(stock);
 
 	}
 
-	public void delete(Long id) {
+	public void delete(Long id) throws RunTimeRestControllerException {
 		stockVerificators.verifyStockIdExist(id);
 		stockRepository.deleteById(id);
 

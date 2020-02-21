@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.iiexercise.dao.LibraryRepository;
 import com.example.iiexercise.entities.Library;
+import com.example.iiexercise.exceptions.RunTimeRestControllerException;
 import com.example.iiexercise.services.ILibraryService;
 import com.example.iiexercise.services.verificators.LibraryVerificators;
 
@@ -21,18 +22,18 @@ public class LibraryService implements ILibraryService {
 	}
 
 	@Override
-	public Library add(Library library) {
+	public Library add(Library library) throws RunTimeRestControllerException {
 		libraryVerificators.verifyLibraryForInsertion(library);
 		library.setId(null); // <^_^>
 		return libraryRepository.save(library);
 	}
 
-	public void update(Library library) {
+	public void update(Library library) throws RunTimeRestControllerException {
 		libraryVerificators.verifyLibraryForUpdate(library);
 		libraryRepository.saveAndFlush(library);
 	}
 
-	public void delete(Long id) {
+	public void delete(Long id) throws RunTimeRestControllerException {
 		libraryVerificators.verifyLibraryIdExist(id);
 		libraryRepository.deleteById(id);
 		

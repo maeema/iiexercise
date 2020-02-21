@@ -16,6 +16,7 @@ import com.example.iiexercise.entities.BookCategory;
 import com.example.iiexercise.entities.Magazine;
 import com.example.iiexercise.entities.Novel;
 import com.example.iiexercise.entities.Stock;
+import com.example.iiexercise.exceptions.RunTimeRestControllerException;
 import com.example.iiexercise.services.IBookService;
 import com.example.iiexercise.services.verificators.AuthorVerificators;
 import com.example.iiexercise.services.verificators.BookVerificators;
@@ -43,7 +44,7 @@ public class BookService implements IBookService {
 	}
 
 	@Override
-	public List<Book> getByLibraryName(String libraryName) {
+	public List<Book> getByLibraryName(String libraryName) throws RunTimeRestControllerException {
 		List<Book> books = new ArrayList<>();
 		List<Stock> stocks = stockRepository.findAllByLibraryName(libraryName);
 		for (Stock stock : stocks) {
@@ -53,20 +54,20 @@ public class BookService implements IBookService {
 	}
 
 	@Override
-	public Novel getNovelMostSoldedByAuthor(Long authorId) {
+	public Novel getNovelMostSoldedByAuthor(Long authorId) throws RunTimeRestControllerException {
 		authorVerificators.verifyAuthorIdExist(authorId);
 		return novelRepository.findTopByAuthorIdOrderByTotalUnitSoldDesc(authorId);
 	}
 
 	@Override
-	public Magazine getMagazineClosedRelease(String category) {
+	public Magazine getMagazineClosedRelease(String category) throws RunTimeRestControllerException {
 		bookVerificators.verifyBookCategoryExist(category);
 		return magazineRepository
 				.findTopByCategoryOrderByNextReleaseDateDesc(BookCategory.valueOf(category.toUpperCase()));
 	}
 
 	@Override
-	public Novel addNovel(Novel novel) {
+	public Novel addNovel(Novel novel) throws RunTimeRestControllerException {
 		bookVerificators.verifyBookForInsertion(novel);
 		if (novel.getTotalUnitSold() == null) {
 			novel.setTotalUnitSold(0L);
@@ -77,7 +78,7 @@ public class BookService implements IBookService {
 	}
 
 	@Override
-	public Magazine addMagazine(Magazine magazine) {
+	public Magazine addMagazine(Magazine magazine) throws RunTimeRestControllerException {
 		bookVerificators.verifyBookForInsertion(magazine);
 		bookVerificators.verifyNextReleaseDate(magazine.getNextReleaseDate());
 		if (magazine.getTotalUnitSold() == null) {
@@ -88,7 +89,7 @@ public class BookService implements IBookService {
 	}
 
 	@Override
-	public void update(Book book) {
+	public void update(Book book) throws RunTimeRestControllerException {
 		bookVerificators.verifyBookForUpdate(book);
 		Optional<Magazine> bookIsMagazine = magazineRepository.findById(book.getId());
 		if (bookIsMagazine.isPresent()) {
@@ -100,7 +101,7 @@ public class BookService implements IBookService {
 	}
 
 	@Override
-	public void delete(Long id) {
+	public void delete(Long id) throws RunTimeRestControllerException {
 		bookVerificators.verifyBookIdExist(id);
 		bookRepository.deleteById(id);
 	}

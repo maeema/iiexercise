@@ -9,6 +9,7 @@ import com.example.iiexercise.exceptions.DataAlreadyExistException;
 import com.example.iiexercise.exceptions.DataNotExistException;
 import com.example.iiexercise.exceptions.MissingDataException;
 import com.example.iiexercise.exceptions.NullModificationException;
+import com.example.iiexercise.exceptions.RunTimeRestControllerException;
 import com.example.iiexercise.exceptions.WrongValueException;
 
 @Service
@@ -17,17 +18,17 @@ public class AuthorVerificators {
 	@Autowired
 	private AuthorRepository authorRepository;
 
-	public void verifyAuthorIdExist(Long authorId) {
+	public void verifyAuthorIdExist(Long authorId) throws RunTimeRestControllerException {
 		if (authorId == null || !authorRepository.existsById(authorId))
 			throw new DataNotExistException(" there is no book has id =" + authorId);
 	}
 
-	public void verifyUpdatedAuthorNotNull(Author author) {
+	public void verifyUpdatedAuthorNotNull(Author author) throws RunTimeRestControllerException {
 		if (author.getName() == null && author.getAge() <= 0)
 			throw new NullModificationException("There is no modification Author found ,we got" + author);
 	}
 
-	public void verifyAuthorForInsertion(Author author) {
+	public void verifyAuthorForInsertion(Author author) throws RunTimeRestControllerException {
 		if (author == null || author.getName() == null || author.getAge() <= 0) {
 			throw new MissingDataException("Author must have name and strictly positive age");
 		}
@@ -38,7 +39,7 @@ public class AuthorVerificators {
 
 	}
 
-	public void verifyAuthorForUpdate(Author author) {
+	public void verifyAuthorForUpdate(Author author) throws RunTimeRestControllerException {
 		if (author == null || author.getId() == null) {
 			throw new MissingDataException("Author must have id");
 		}

@@ -28,8 +28,6 @@ public class LibraryRestController {
 	public ResponseEntity<?> getByLibrary(@PathVariable("libname") String libraryName) {
 		try {
 			return ResponseEntity.ok(stockService.getStocksByLibraryName(libraryName));
-		} catch (RunTimeRestControllerException e) {
-			return ResponseEntity.status(e.getErrorCode()).body(e.getMessage());
 		} catch (RuntimeException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unexpected error found");
 		}

@@ -11,6 +11,7 @@ import com.example.iiexercise.entities.BookCategory;
 import com.example.iiexercise.exceptions.DataAlreadyExistException;
 import com.example.iiexercise.exceptions.DataNotExistException;
 import com.example.iiexercise.exceptions.MissingDataException;
+import com.example.iiexercise.exceptions.RunTimeRestControllerException;
 import com.example.iiexercise.exceptions.WrongValueException;
 
 @Service
@@ -22,18 +23,18 @@ public class BookVerificators {
 	@Autowired
 	private BookRepository bookRepository;
 
-	public void verifyBookIdExist(Long bookId) {
+	public void verifyBookIdExist(Long bookId) throws RunTimeRestControllerException {
 		if (bookId == null || !bookRepository.existsById(bookId))
 			throw new DataNotExistException(" there is no book has id =" + bookId);
 	}
 
-	public void verifyNextReleaseDate(Date nextReleaseDate) {
+	public void verifyNextReleaseDate(Date nextReleaseDate) throws RunTimeRestControllerException {
 		if (nextReleaseDate.before(new Date())) {
 			throw new WrongValueException("NextReleaseDate must be in the future");
 		}
 	}
 
-	public void verifyBookCategoryExist(String categoryName) {
+	public void verifyBookCategoryExist(String categoryName) throws RunTimeRestControllerException {
 		for (BookCategory category : BookCategory.values()) {
 			if (category.name().equalsIgnoreCase(categoryName)) {
 				return;
@@ -42,7 +43,7 @@ public class BookVerificators {
 		throw new MissingDataException("there is no category named " + categoryName);
 	}
 
-	public void verifyBookForInsertion(Book book) {
+	public void verifyBookForInsertion(Book book) throws RunTimeRestControllerException {
 		if (book == null || book.getName() == null || book.getPrice() == null || book.getPublicationDate() == null
 				|| book.getNumberOfPages() == null || book.getAuthor() == null)
 			throw new MissingDataException(
@@ -60,7 +61,7 @@ public class BookVerificators {
 		authorVerificators.verifyAuthorIdExist(book.getAuthor().getId());
 	}
 
-	public void verifyBookForUpdate(Book book) {
+	public void verifyBookForUpdate(Book book) throws RunTimeRestControllerException {
 		if (book == null || book.getId() == null)
 			throw new MissingDataException(
 					"Book must have id and name or positive price or publicationDate from past or strictly positive numberOfPages or object author that have id");

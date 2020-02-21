@@ -2,7 +2,7 @@ package com.example.iiexercise.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public abstract class RunTimeRestControllerException extends RuntimeException {
+public abstract class RunTimeRestControllerException extends Exception {
 	/**
 	 * 
 	 */

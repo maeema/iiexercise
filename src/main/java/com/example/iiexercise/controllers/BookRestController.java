@@ -27,8 +27,6 @@ public class BookRestController {
 	public ResponseEntity<?> getAll() {
 		try {
 			return ResponseEntity.ok(bookService.getAll());
-		} catch (RunTimeRestControllerException e) {
-			return ResponseEntity.status(e.getErrorCode()).body(e.getMessage());
 		} catch (RuntimeException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unexpected error found");
 		}
